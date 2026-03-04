@@ -12,7 +12,14 @@ if (!BOT_TOKEN) throw new Error("Missing BOT_TOKEN in .env");
 
 const WEBHOOK_URL = process.env.WEBHOOK_URL; // e.g. https://bikacalculate.onrender.com
 const PORT = parseInt(process.env.PORT || "8080", 10);
-const OWNER_ID = Number(process.env.OWNER_ID || 0);
+const OWNER_IDS = String(process.env.OWNER_IDS || process.env.OWNER_ID || "")
+  .split(",")
+  .map(s => Number(String(s).trim()))
+  .filter(n => Number.isFinite(n) && n > 0);
+
+function isOwner(ctx) {
+  return OWNER_IDS.includes(ctx.from?.id);
+}
 const MONGODB_URI = process.env.MONGODB_URI;
 if (!MONGODB_URI) throw new Error("Missing MONGODB_URI in .env");
 
@@ -311,9 +318,8 @@ bot.command("calc", async (ctx) => {
 // Owner-only admin dashboard
 bot.command("admin", async (ctx) => {
   trackContextAsync(ctx);
-  if (!OWNER_ID || ctx.from.id !== OWNER_ID) {
-    return ctx.reply("❌ Owner only command.");
-  }
+
+  if (!isOwner(ctx)) return ctx.reply("❌ Owner only command.");
 
   const [totalUsers, totalGroups, activeGroups] = await Promise.all([
     User.countDocuments({}).exec(),
@@ -350,9 +356,8 @@ bot.command("admin", async (ctx) => {
 // Owner-only broadcast
 bot.command("broadcast", async (ctx) => {
   trackContextAsync(ctx);
-  if (!OWNER_ID || ctx.from.id !== OWNER_ID) {
-    return ctx.reply("❌ Owner only command.");
-  }
+
+  if (!isOwner(ctx)) return ctx.reply("❌ Owner only command.");
 
   const args = ctx.message.text.split(" ").slice(1).join(" ").trim();
   if (!args) {
