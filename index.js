@@ -10,7 +10,7 @@ const mongoose = require("mongoose");
 const BOT_TOKEN = process.env.BOT_TOKEN;
 if (!BOT_TOKEN) throw new Error("Missing BOT_TOKEN in .env");
 
-const WEBHOOK_URL = process.env.WEBHOOK_URL; // e.g. https://bikacalculate.onrender.com
+const WEBHOOK_URL = process.env.WEBHOOK_URL; 
 const PORT = parseInt(process.env.PORT || "8080", 10);
 const OWNER_IDS = String(process.env.OWNER_IDS || process.env.OWNER_ID || "")
   .split(",")
@@ -284,7 +284,7 @@ bot.start(async (ctx) => {
     "• Inline mode: `မိမိပို့လိုတဲ့ private Chat မှာ @YoCalcuBot 12+3` လို ရိုက်ပြီး private chat ထဲသို့ ရလဒ် ပို့လို့ရမယ်\n\n" +
     "Admin (Owner Only) 🛡\n" +
     "• `/admin` – Bot Users, Groups, Uptime စတာတွေ ကြည့်ရန်\n" +
-    "• `/broadcast Your message` – Bot အသုံးပြုနေသူတွေကို အကြောင်းကြားဖို့\n\n" +
+    "• `/broadcast Your message` – Bot အသုံးပြုနေသူတွေကို အကြောင်းကြားဖို့\n\n";
     
   return ctx.reply(text, { parse_mode: "Markdown" });
 });
